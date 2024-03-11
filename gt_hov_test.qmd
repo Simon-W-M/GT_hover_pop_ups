@@ -1,0 +1,58 @@
+---
+title: "gt hover"
+format:
+  html:
+    # Table of Contents options
+    toc: false
+    toc-depth: 3
+    toc-location: left
+    toc-title: Contents
+    number-sections: false
+    number-depth: 3
+    # Render options
+    theme: cosmo
+    css: balloon.css
+
+editor: visual
+---
+
+
+
+```{r}
+#| echo: false
+#| warning: false
+
+library(tidyverse)
+library(gt)
+
+# some dummy data
+dat <- head(mtcars)
+
+# crete some columns with the into 
+dat$labels <- 'Hello world blurbly mc blurb'
+dat$hover <- 'Information'
+
+# create GT table and use balloon CSS to create pop up
+dat |>gt() |>
+  cols_merge(
+    columns = vars(labels, hover)
+  ) |>
+  text_transform(
+    locations = cells_body(
+      columns = vars(labels)
+    ),
+    fn = function(x){
+      labelx <- x
+      hoverx <- 'Information'
+      glue::glue(
+        "<button aria-label='{labelx}' data-balloon-pos='up'>{hoverx}</button>"
+        #"<button onclick=\"alert('{labelx}')\">{hoverx}</button>"
+      )
+    }
+  )
+
+
+
+```
+
+The problem I have is that this seems to work just fine for firefox but does not work for chrome or edge.  Something about the CSS or is it something else?
